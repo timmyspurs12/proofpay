@@ -1,0 +1,93 @@
+{
+  "checkpointAt": "2026-10-15T10:07:06.020Z",
+  "network": "GenLayer Testnet Bradbury",
+  "chainId": 4221,
+  "rpc": "https://rpc-bradbury.genlayer.com",
+  "explorer": "https://explorer-bradbury.genlayer.com",
+  "contractAddress": "0xA9199502C11C897a8550273Bcb7d8B1816DF4669",
+  "deployer": "0x52d3784dF7cdAB983aAE340150fd3757ACaEFCA0",
+  "sourcePath": "contracts/proofpay_adjudicator.py",
+  "sourceSha256": "9b90bd1eadd2ee82cfa98398c5613229d06fe17f4bb0084735f4433c46baa6bf",
+  "onChainCodeSha256MatchesSource": true,
+  "deployment": {
+    "txHash": "0x2ab58f01bf8a5371dad5a8c6d32612dcfbc8f2e10c9f010e83bfebc294e8f623",
+    "status": "FINALIZED",
+    "consensusResult": "AGREE",
+    "executionResult": "FINISHED_WITH_RETURN"
+  },
+  "scenarios": {
+    "A": {
+      "txHash": "0x55c81b6570759706a6e615917c9ae403a5031134a9f27ee9fea1faf0f97b9481",
+      "status": "FINALIZED",
+      "consensusResult": "AGREE",
+      "executionResult": "FINISHED_WITH_RETURN",
+      "verdict": "SELLER_WINS (read back live during the original run; case id was <run>-a — the exact run prefix is not recoverable from SDK transaction views, which expose no call args, and the contract exposes no key enumeration)"
+    },
+    "B": {
+      "caseId": "live1-b",
+      "txHash": "0x002e761f99830a1ba16bb1259028824158bbb09142238bd093586c2fc9b0c26d",
+      "status": "FINALIZED",
+      "consensusResult": "AGREE",
+      "executionResult": "FINISHED_WITH_RETURN",
+      "verdict": "BUYER_WINS, crit_1=MET, crit_2=NOT_MET (re-read at checkpoint)"
+    },
+    "C": {
+      "caseId": "live1-c",
+      "txHash": "0x1ef8f4bb59bd038ab438cb635cc4fb1ae9afb14b16f92209fb5e40365b2d0749",
+      "status": "FINALIZED",
+      "consensusResult": "AGREE",
+      "executionResult": "FINISHED_WITH_RETURN",
+      "verdict": "INSUFFICIENT_EVIDENCE, findings UNCERTAIN (re-read at checkpoint)"
+    },
+    "D_malformed": {
+      "txHash": "0x50023f995b96b1be9c0e7024456ab7d3fdbc7e4d2254329d813497be93e799a3",
+      "status": "FINALIZED",
+      "executionResult": "FINISHED_WITH_ERROR",
+      "verdict": "rejected deterministically (empty criteria)"
+    },
+    "D_duplicate": {
+      "txHash": "0xbdc846ed55d3cd363a9193f09db64d25f5d796a170375b428837274d7631121a",
+      "status": "FINALIZED",
+      "executionResult": "FINISHED_WITH_ERROR",
+      "verdict": "rejected (case already decided)"
+    },
+    "E": {
+      "verdict": "live1-b remains DECIDED with one stable verdict across repeated reads; contract has no settlement function by design (off-chain idempotent settlement, app-level)"
+    }
+  },
+  "appSubmittedAdjudications": {
+    "app1": {
+      "requestId": "adj_5d0c3f6ccd044baea71d",
+      "txHash": "0x7932d889b88b57b1352353cd011f9a8965ef9005a4c1770922896a03d34d2812",
+      "status": "FINALIZED",
+      "consensusResult": "IDLE",
+      "note": "finalized without adopted decision; no verdict stored; app imported nothing"
+    },
+    "app2": {
+      "requestId": "adj_97cd2ab980fb46209413",
+      "txHash": "0xc4aa772f74dc5f0aa5bbe21febc15aa13b4f90f904eea2eb1f701c6360350fe1",
+      "status": "FINALIZED",
+      "consensusResult": "DISAGREE",
+      "note": "undetermined consensus; case UNKNOWN on-chain; app restored dispute"
+    },
+    "app3": {
+      "requestId": "adj_07137cf6f41047a8a4de",
+      "txHash": "0xc4cfdbebac88861f0f9781fe9adb172a8f96bd3495c71832894a2e7402a62f90",
+      "status": "FINALIZED",
+      "consensusResult": "IDLE",
+      "executionResult": "NOT_VOTED",
+      "note": "finalized without votes adopted; no verdict stored"
+    },
+    "app4": {
+      "requestId": "adj_c02f19cec5b44149876d",
+      "txHash": "0x7407c86faec589d8c3273d2e645f0ff8f917140bee9caf0c2ca60c5996755c8f",
+      "status": "LEADER_TIMEOUT",
+      "note": "only non-final item; resumable; do not resubmit blindly"
+    }
+  },
+  "frontend": {
+    "mode": "GENLAYER_TESTNET (verified via GET /api/auth/me at checkpoint)",
+    "contractAddress": "0xA9199502C11C897a8550273Bcb7d8B1816DF4669",
+    "network": "Bradbury 4221"
+  }
+}
