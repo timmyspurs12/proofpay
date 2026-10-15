@@ -1,5 +1,5 @@
 {
-  "checkpointAt": "2026-10-15T10:50:41.260Z",
+  "checkpointAt": "2026-10-15T13:05:34.677Z",
   "network": "GenLayer Testnet Bradbury",
   "chainId": 4221,
   "rpc": "https://rpc-bradbury.genlayer.com",
@@ -91,9 +91,10 @@
     "network": "Bradbury 4221"
   },
   "rechecked": {
-    "app4": "FINALIZED | IDLE | NOT_VOTED (final; case UNKNOWN)"
+    "liveSite": "GENLAYER_TESTNET verified via /api/auth/me; seeded Neon DB serving dashboard"
   },
   "appAttemptsFinal": "all four FINALIZED/terminal, zero eligible verdicts, zero imported",
   "repositoryUrl": "https://github.com/timmyspurs12/proofpay",
-  "publishedCommit": "adcbd39bbe19063090062759ff93814669723fb1"
+  "publishedCommit": "adcbd39bbe19063090062759ff93814669723fb1",
+  "websiteUrl": "https://proofpay-ltid.vercel.app"
 }
