@@ -123,15 +123,19 @@ function ShellInner({ children }: { children: React.ReactNode }) {
     try {
       const m = await api<Me>('/api/auth/me');
       setMe(m);
-      if (m.user) {
-        const [u, n] = await Promise.all([
-          api<{ id: string; name: string; role: string; email: string }[]>('/api/users').catch(() => []),
-          api<{ id: string; title: string; body: string; href: string; createdAt: string; read: boolean }[]>('/api/notifications').catch(() => []),
-        ]);
-        setUsers(u); setNotifs(n);
-      }
+      // Personas are needed by the signed-OUT sign-in gate, so they must be
+      // fetched regardless of session state. Notifications need a session.
+      const [u, n] = await Promise.all([
+        api<{ id: string; name: string; role: string; email: string }[]>('/api/users').catch(() => []),
+        m.user
+          ? api<{ id: string; title: string; body: string; href: string; createdAt: string; read: boolean }[]>('/api/notifications').catch(() => [])
+          : Promise.resolve([] as { id: string; title: string; body: string; href: string; createdAt: string; read: boolean }[]),
+      ]);
+      setUsers(u); setNotifs(n);
     } catch {
       setMe({ user: null, genlayer: { mode: 'DEMO_SIMULATED', network: { label: 'Demo', chainId: 0 }, contractAddress: null, contractVersion: '' } });
+    } finally {
+      setGateLoaded(true);
     }
   }, []);
   useEffect(() => { load(); }, [load, pathname]);
@@ -337,7 +341,9 @@ function ShellInner({ children }: { children: React.ReactNode }) {
                 <h1 className="mt-3 text-[18px] font-semibold tracking-tight text-ink">Sign in to your workspace</h1>
                 <p className="mt-1 text-[13px] leading-relaxed text-faint">Demo personas only — synthetic users, no real credentials. Each persona sees only the agreements they are a party to; authorization is enforced on the server.</p>
                 <div className="mt-4 flex flex-col gap-1.5">
-                  {users.length === 0 && <p className="text-[13px] text-faint">Loading personas… If this persists, run <span className="font-mono">npm run db:seed</span>.</p>}
+                  {users.length === 0 && (gateLoaded
+                    ? <p className="text-[13px] text-faint">Could not load personas. Check your connection and refresh the page.</p>
+                    : <p className="text-[13px] text-faint">Loading personas…</p>)}
                   {users.map((u) => (
                     <button key={u.id} type="button" disabled={busy} onClick={() => signIn(u.id)}
                       className="flex items-center gap-2.5 border border-line bg-paper px-3 py-2.5 text-left transition hover:border-mineral hover:bg-mineral-tint/40 disabled:opacity-50" style={{ borderRadius: 8 }}>
