@@ -1,22 +1,41 @@
 {
   "purpose": "End-to-end LIVE verification through the ProofPay API (login → submit adjudication → poll → import verdict → execute settlement), driven by scripts/verify-app-live.mjs",
   "dispute": "dsp_contested",
-  "requestId": "adj_5d0c3f6ccd044baea71d",
-  "mode": "GENLAYER_TESTNET",
   "contractAddress": "0xA9199502C11C897a8550273Bcb7d8B1816DF4669",
-  "txId": "0x7932d889b88b57b1352353cd011f9a8965ef9005a4c1770922896a03d34d2812",
-  "explorerTxUrl": "https://explorer-bradbury.genlayer.com/tx/0x7932d889b88b57b1352353cd011f9a8965ef9005a4c1770922896a03d34d2812",
-  "proven": [
-    "App API accepted the adjudication and returned HTTP 202 with a REAL GenLayer txId (not demo-tx-*)",
-    "On-chain transaction exists on Bradbury for contract adjudicate(caseId=adj_5d0c3f6ccd044baea71d)",
-    "While undecided, the app reports PENDING ('Pending is not a decision') — never a fabricated verdict",
-    "DB state is resumable: request GENLAYER_TESTNET/PENDING, dispute ADJUDICATING"
+  "attempts": [
+    {
+      "requestId": "adj_5d0c3f6ccd044baea71d",
+      "txId": "0x7932d889b88b57b1352353cd011f9a8965ef9005a4c1770922896a03d34d2812",
+      "explorerTxUrl": "https://explorer-bradbury.genlayer.com/tx/0x7932d889b88b57b1352353cd011f9a8965ef9005a4c1770922896a03d34d2812",
+      "outcome": "Submitted via app (HTTP 202, real tx). Stalled in LEADER_TIMEOUT for hours, then READY_TO_FINALIZE, then FINALIZED — but with consensus result IDLE and NO verdict stored on-chain (get_case_status = UNKNOWN). The network finalized the transaction without adopting a decision. App PATCH correctly imported nothing and recorded no decision."
+    },
+    {
+      "requestId": "adj_97cd2ab980fb46209413",
+      "txId": "0xc4aa772f74dc5f0aa5bbe21febc15aa13b4f90f904eea2eb1f701c6360350fe1",
+      "explorerTxUrl": "https://explorer-bradbury.genlayer.com/tx/0xc4aa772f74dc5f0aa5bbe21febc15aa13b4f90f904eea2eb1f701c6360350fe1",
+      "outcome": "UNDETERMINED (consensus result DISAGREE). App handled as designed: dispute returned to EVIDENCE, agreement to DISPUTED, no state decided."
+    },
+    {
+      "requestId": "adj_07137cf6f41047a8a4de",
+      "txId": "0xc4cfdbebac88861f0f9781fe9adb172a8f96bd3495c71832894a2e7402a62f90",
+      "explorerTxUrl": "https://explorer-bradbury.genlayer.com/tx/0xc4cfdbebac88861f0f9781fe9adb172a8f96bd3495c71832894a2e7402a62f90",
+      "outcome": "Still LEADER_TIMEOUT at record time (validator set inactive). Request remains PENDING and resumable via PATCH if it later decides."
+    },
+    {
+      "requestId": "adj_c02f19cec5b44149876d",
+      "txId": "0x7407c86faec589d8c3273d2e645f0ff8f917140bee9caf0c2ca60c5996755c8f",
+      "explorerTxUrl": "https://explorer-bradbury.genlayer.com/tx/0x7407c86faec589d8c3273d2e645f0ff8f917140bee9caf0c2ca60c5996755c8f",
+      "outcome": "LEADER_TIMEOUT / NOT_VOTED at record time — same inactive-validator conditions as attempts 1 and 3. Remains PENDING and resumable."
+    }
   ],
-  "pendingAtRecordTime": "Network-side status LEADER_TIMEOUT (leader rotation, result IDLE) for >50 minutes — validator voting had not completed. This is network behaviour, not an app or contract error: the same contract decided scenarios A–E earlier the same day.",
-  "resume": "When the tx reaches ACCEPTED/FINALIZED, call PATCH /api/disputes/dsp_contested/adjudications {requestId} (or press Refresh in the dispute UI) — the app imports and validates the verdict, authorizes settlement, and POST /api/settlements/:id/execute completes it. If the tx ends UNDETERMINED, the app returns the dispute to EVIDENCE/DISPUTED with no state decided. Re-running scripts/verify-app-live.mjs would create a SECOND request; resume the existing one instead.",
+  "proven": [
+    "App API submits REAL GenLayer adjudications (HTTP 202 + real txIds, GENLAYER_TESTNET mode)",
+    "Pending is reported as pending ('Pending is not a decision') at all times",
+    "UNDETERMINED consensus is handled safely: dispute/agreement restored, nothing decided",
+    "A finalized-but-undecided transaction imports nothing: 0 adjudication results, 0 settlements in DB after all attempts",
+    "Contract-level adjudication itself is proven the same day on the same contract (scenarios A–E, verdicts read back on-chain)"
+  ],
+  "notYetObserved": "A decided verdict imported through the app's PATCH + settlement execution via API. Blocked solely by Bradbury validator activity during this session (leader timeouts / idle finalization), not by app or contract code. Resume path: open dispute dsp_contested in the app and press Refresh (PATCHes the latest request), or submit a fresh adjudication when network conditions improve.",
   "recordedAt": "2026-10-15",
-  "retry": {
-    "note": "First app-submitted tx remained LEADER_TIMEOUT (round 0, no votes) for hours — stalled network-side. A second adjudication request was submitted through the app with a new idempotency key (product retry path); the first request remains PENDING and auditable.",
-    "submitted": "2026-10-15"
-  }
+  "networkConditionsNote": "All six morning transactions (deploy + scenarios A–E) decided normally. Every app-submitted adjudication from mid-session onward hit LEADER_TIMEOUT/UNDETERMINED/idle finalization — a persistent Bradbury validator-activity condition, not an app or contract defect. Import ONLY ONE decided request (the latest) when conditions improve, to avoid duplicate settlement authorizations from multiple decided caseIds."
 }
