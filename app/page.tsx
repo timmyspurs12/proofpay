@@ -1,6 +1,7 @@
 'use client';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Icon, I, Logo } from '@/components/ui';
+import { Icon, I, Logo, ModeBadge } from '@/components/ui';
 import HeroPreview from '@/components/HeroPreview';
 
 const FACTS = [
@@ -20,7 +21,7 @@ const SEQUENCE = [
 const DIFFERENCE = [
   { title: 'Decisions you can inspect', body: 'Every verdict names the specific criterion, quotes the evidence gap, and carries a structured confidence — not a star rating or a chat transcript.' },
   { title: 'Both sides, one record', body: 'Provider evidence and client objection live in the same evidence register, so the adjudicator sees the same record you do — nothing side-channelled.' },
-  { title: 'Honest by construction', body: 'The product says simulated when it is simulated. In this demo, funding, adjudication and settlement are all local records — no chain transaction is claimed anywhere.' },
+  { title: 'Honest by construction', body: 'The product says simulated when it is simulated. Funding and settlement are off-chain records by design; adjudication runs on GenLayer when configured — and this page states which mode is actually live.' },
 ];
 
 function ArrowLink({ href, children }: { href: string; children: React.ReactNode }) {
@@ -32,6 +33,13 @@ function ArrowLink({ href, children }: { href: string; children: React.ReactNode
 }
 
 export default function Landing() {
+  // The landing must state the deployment's REAL mode (live vs simulated),
+  // never a hardcoded demo label. Null while loading: claim nothing yet.
+  const [mode, setMode] = useState<string | null>(null);
+  useEffect(() => {
+    fetch('/api/auth/me').then((r) => r.json()).then((j) => setMode(j?.data?.genlayer?.mode ?? null)).catch(() => setMode(null));
+  }, []);
+  const live = mode === 'GENLAYER_TESTNET';
   return (
     <div className="min-h-screen bg-canvas text-ink">
       {/* ---------- Header ---------- */}
@@ -44,9 +52,7 @@ export default function Landing() {
             <a href="#genlayer" className="hover:text-ink">GenLayer</a>
           </nav>
           <span className="ml-auto flex items-center gap-2">
-            <span className="hidden items-center gap-1.5 font-mono text-[10.5px] text-faint sm:flex">
-              <span className="h-1.5 w-1.5 rounded-full bg-amber2" aria-hidden="true" /> DEMO_SIMULATED
-            </span>
+            <span className="hidden sm:inline-flex">{mode ? <ModeBadge mode={mode} /> : null}</span>
             <Link href="/app" className="inline-flex items-center gap-1.5 rounded-[8px] bg-midnight px-3.5 py-2 text-[13px] font-medium text-white transition-colors duration-fast hover:bg-ink">
               Open workspace <Icon d={I.arrowR} size={13} />
             </Link>
@@ -159,12 +165,12 @@ export default function Landing() {
 
             <div className="h-fit border border-line2/80 bg-canvas" style={{ borderRadius: 10 }}>
               <p className="flex items-center justify-between border-b border-line px-4 py-2.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-faint">
-                This demo <span className="font-mono text-[10px] font-medium normal-case tracking-normal text-amber2">DEMO_SIMULATED</span>
+                This deployment <span className={`font-mono text-[10px] font-medium normal-case tracking-normal ${live ? 'text-mineral' : 'text-amber2'}`}>{mode ?? '…'}</span>
               </p>
               <dl className="divide-y divide-line text-[13px]">
                 {[
                   ['Contract source', 'Real · Python Intelligent Contract'],
-                  ['Adjudication in this demo', 'Simulated locally · no chain transaction'],
+                  ['Adjudication here', live ? 'Live · Bradbury Intelligent Contract' : 'Simulated locally · no chain transaction'],
                   ['Funding & settlement', 'Simulated records · balanced, attributed'],
                   ['When configured', 'Studionet / Bradbury testnet via genlayer-js'],
                 ].map(([k, v]) => (
@@ -203,7 +209,7 @@ export default function Landing() {
       <footer className="border-t border-line">
         <div className="mx-auto flex max-w-[1240px] flex-wrap items-center justify-between gap-2 px-4 py-4 sm:px-6">
           <span className="flex items-center gap-2"><Logo /><span className="text-[12px] text-faint">Escrow with a memory.</span></span>
-          <span className="font-mono text-[10.5px] text-faint">Demo workspace · DEMO_SIMULATED · no real funds or chain transactions</span>
+          <span className="font-mono text-[10.5px] text-faint">{live ? 'Live on GenLayer Bradbury testnet · seeded demo data · no real funds' : 'Demo workspace · DEMO_SIMULATED · no real funds or chain transactions'}</span>
         </div>
       </footer>
     </div>
