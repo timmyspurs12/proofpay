@@ -1,0 +1,41 @@
+{
+  "name": "proofpay",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3000 -H 0.0.0.0",
+    "build": "next build",
+    "start": "next start -p 3000 -H 0.0.0.0",
+    "lint": "next lint",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:seed": "tsx prisma/seed.ts",
+    "db:setup": "prisma generate && prisma db push && tsx prisma/seed.ts",
+    "contract:test": "python3 -m pytest contracts/tests -v",
+    "genlayer:check": "python3 -c \"import ast; ast.parse(open('contracts/proofpay_adjudicator.py').read()); print('contract syntax OK')\""
+  },
+  "dependencies": {
+    "@prisma/client": "^5.22.0",
+    "genlayer-js": "^1.1.8",
+    "next": "14.2.5",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^16.3.3",
+    "@types/node": "^20.14.0",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "autoprefixer": "^10.4.19",
+    "jsdom": "^29.1.1",
+    "postcss": "^8.4.40",
+    "prisma": "^5.22.0",
+    "tailwindcss": "^3.4.7",
+    "tsx": "^4.23.15",
+    "typescript": "^5.5.4",
+    "vitest": "^4.1.11"
+  }
+}

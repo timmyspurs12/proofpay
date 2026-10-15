@@ -1,0 +1,18 @@
+{
+  "purpose": "End-to-end LIVE verification through the ProofPay API (login → submit adjudication → poll → import verdict → execute settlement), driven by scripts/verify-app-live.mjs",
+  "dispute": "dsp_contested",
+  "requestId": "adj_5d0c3f6ccd044baea71d",
+  "mode": "GENLAYER_TESTNET",
+  "contractAddress": "0xA9199502C11C897a8550273Bcb7d8B1816DF4669",
+  "txId": "0x7932d889b88b57b1352353cd011f9a8965ef9005a4c1770922896a03d34d2812",
+  "explorerTxUrl": "https://explorer-bradbury.genlayer.com/tx/0x7932d889b88b57b1352353cd011f9a8965ef9005a4c1770922896a03d34d2812",
+  "proven": [
+    "App API accepted the adjudication and returned HTTP 202 with a REAL GenLayer txId (not demo-tx-*)",
+    "On-chain transaction exists on Bradbury for contract adjudicate(caseId=adj_5d0c3f6ccd044baea71d)",
+    "While undecided, the app reports PENDING ('Pending is not a decision') — never a fabricated verdict",
+    "DB state is resumable: request GENLAYER_TESTNET/PENDING, dispute ADJUDICATING"
+  ],
+  "pendingAtRecordTime": "Network-side status LEADER_TIMEOUT (leader rotation, result IDLE) for >50 minutes — validator voting had not completed. This is network behaviour, not an app or contract error: the same contract decided scenarios A–E earlier the same day.",
+  "resume": "When the tx reaches ACCEPTED/FINALIZED, call PATCH /api/disputes/dsp_contested/adjudications {requestId} (or press Refresh in the dispute UI) — the app imports and validates the verdict, authorizes settlement, and POST /api/settlements/:id/execute completes it. If the tx ends UNDETERMINED, the app returns the dispute to EVIDENCE/DISPUTED with no state decided. Re-running scripts/verify-app-live.mjs would create a SECOND request; resume the existing one instead.",
+  "recordedAt": "2026-10-15"
+}

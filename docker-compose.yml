@@ -1,0 +1,13 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: proofpay
+      POSTGRES_PASSWORD: [SECURITY_DATA]
+      POSTGRES_DB: proofpay
+    ports:
+      - "5432:5432"
+    volumes:
+      - proofpay_pg:/var/lib/postgresql/data
+volumes:
+  proofpay_pg:

@@ -1,0 +1,234 @@
+// ProofPay data model.
+// Local/demo: SQLite (DATABASE_URL="file:./dev.db").
+// Production: PostgreSQL — set provider = "postgresql" and a postgres DATABASE_URL
+// (see docs/DEPLOYMENT.md + docker-compose.yml). All money is integer minor units.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id
+  name         String
+  email        String   @unique
+  role         String // CLIENT | PROVIDER | BOTH
+  createdAt    DateTime @default(now())
+  wallets      WalletIdentity[]
+  asClient     Agreement[] @relation("AgreementClient")
+  asProvider   Agreement[] @relation("AgreementProvider")
+  evidence     Evidence[]
+  auditEvents  AuditEvent[]
+  notifications Notification[]
+}
+
+model WalletIdentity {
+  id        String @id
+  userId    String
+  user      User   @relation(fields: [userId], references: [id])
+  address   String @unique
+  chainId   Int    @default(4221)
+  isPrimary Boolean @default(true)
+  createdAt DateTime @default(now())
+  @@index([userId])
+}
+
+model Agreement {
+  id            String   @id
+  title         String
+  description   String
+  status        String   @default("DRAFT")
+  clientId      String
+  client        User     @relation("AgreementClient", fields: [clientId], references: [id])
+  providerId    String
+  provider      User     @relation("AgreementProvider", fields: [providerId], references: [id])
+  amountMinor   Int
+  currency      String   @default("USD")
+  deadline      DateTime
+  reviewDays    Int      @default(7)
+  isDemo        Boolean  @default(true)
+  currentVersionId String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  versions      AgreementVersion[]
+  funding       FundingRecord?
+  evidence      Evidence[]
+  disputes      Dispute[]
+  settlements   SettlementInstruction[]
+  chainTxs      BlockchainTransaction[]
+  @@index([clientId])
+  @@index([providerId])
+  @@index([status])
+}
+
+model AgreementVersion {
+  id          String   @id
+  agreementId String
+  agreement   Agreement @relation(fields: [agreementId], references: [id])
+  version     Int
+  termsHash   String // sha256 of the immutable terms snapshot
+  snapshot    String // JSON: deliverables, criteria, evidenceRequirements, settlement terms
+  approvedBy  String // JSON array of user ids who approved
+  changeNote  String   @default("")
+  createdAt   DateTime @default(now())
+  disputes    Dispute[]
+  @@unique([agreementId, version])
+  @@index([agreementId])
+}
+
+model FundingRecord {
+  id          String   @id
+  agreementId String   @unique
+  agreement   Agreement @relation(fields: [agreementId], references: [id])
+  amountMinor Int
+  currency    String
+  method      String // DEMO_LEDGER | GENLAYER_TESTNET
+  status      String   @default("RECORDED") // RECORDED | CONFIRMED | FAILED
+  reference   String   @default("") // demo ref or chain tx id — labelled by `method`
+  createdAt   DateTime @default(now())
+}
+
+model Evidence {
+  id          String   @id
+  agreementId String
+  agreement   Agreement @relation(fields: [agreementId], references: [id])
+  disputeId   String?
+  dispute     Dispute? @relation(fields: [disputeId], references: [id])
+  criterionId String   @default("")
+  type        String // GITHUB | DEPLOYMENT_URL | SCREENSHOT | DOCUMENT | DELIVERABLE_FILE | NOTE
+  title       String
+  url         String   @default("")
+  contentText String   @default("")
+  fileName    String   @default("")
+  fileSize    Int      @default(0)
+  contentHash String // sha256 of content/url snapshot
+  hashStatus  String   @default("RECORDED") // RECORDED — hash recorded; authorship NOT implied
+  submittedById String
+  submittedBy User     @relation(fields: [submittedById], references: [id])
+  createdAt   DateTime @default(now())
+  @@index([agreementId])
+  @@index([disputeId])
+}
+
+model Dispute {
+  id          String   @id
+  agreementId String
+  agreement   Agreement @relation(fields: [agreementId], references: [id])
+  versionId   String
+  version     AgreementVersion @relation(fields: [versionId], references: [id])
+  openedById  String
+  reason      String
+  criterionId String   @default("")
+  status      String   @default("OPEN") // OPEN | EVIDENCE | ADJUDICATING | DECIDED | NEEDS_EVIDENCE | CLOSED
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  submissions DisputeSubmission[]
+  evidence    Evidence[]
+  adjudications AdjudicationRequest[]
+  settlements SettlementInstruction[]
+  @@index([agreementId])
+}
+
+model DisputeSubmission {
+  id        String   @id
+  disputeId String
+  dispute   Dispute  @relation(fields: [disputeId], references: [id])
+  authorId  String
+  kind      String // CLAIM | REBUTTAL
+  body      String
+  createdAt DateTime @default(now())
+  @@index([disputeId])
+}
+
+model AdjudicationRequest {
+  id            String   @id
+  disputeId     String
+  dispute       Dispute  @relation(fields: [disputeId], references: [id])
+  agreementId   String
+  versionId     String
+  snapshotHash  String
+  mode          String // DEMO_SIMULATED | GENLAYER_TESTNET
+  contractAddress String @default("")
+  network       String   @default("")
+  txId          String   @default("")
+  status        String   @default("QUEUED") // QUEUED | PENDING | ACCEPTED | FINALIZED | FAILED | UNDETERMINED
+  idempotencyKey String  @unique
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  result        AdjudicationResult?
+  @@index([disputeId])
+}
+
+model AdjudicationResult {
+  id            String   @id
+  requestId     String   @unique
+  request       AdjudicationRequest @relation(fields: [requestId], references: [id])
+  decision      String // BUYER_WINS | SELLER_WINS | PARTIAL_SETTLEMENT | INSUFFICIENT_EVIDENCE
+  providerShareBps Int?
+  rationale     String
+  verdictJson   String // full structured verdict (findings, refs, uncertainties)
+  createdAt     DateTime @default(now())
+}
+
+model SettlementInstruction {
+  id            String   @id
+  agreementId   String
+  agreement     Agreement @relation(fields: [agreementId], references: [id])
+  disputeId     String?
+  dispute       Dispute?  @relation(fields: [disputeId], references: [id])
+  decision      String
+  toProviderMinor Int
+  toClientMinor Int
+  currency      String
+  status        String   @default("AUTHORIZED") // AUTHORIZED | EXECUTING | EXECUTED | FAILED
+  mode          String // DEMO_LEDGER | GENLAYER_TESTNET
+  reference     String   @default("")
+  idempotencyKey String  @unique
+  failureReason String   @default("")
+  createdAt     DateTime @default(now())
+  executedAt    DateTime?
+  @@index([agreementId])
+}
+
+model BlockchainTransaction {
+  id          String   @id
+  agreementId String?
+  agreement   Agreement? @relation(fields: [agreementId], references: [id])
+  kind        String // FUNDING | ADJUDICATION | SETTLEMENT
+  network     String
+  txId        String
+  status      String // SIMULATED | PENDING | ACCEPTED | FINALIZED | FAILED
+  detail      String   @default("")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@index([agreementId])
+}
+
+model AuditEvent {
+  id        String   @id
+  actorId   String?
+  actor     User?    @relation(fields: [actorId], references: [id])
+  entityType String
+  entityId  String
+  action    String
+  detail    String   @default("")
+  createdAt DateTime @default(now())
+  @@index([entityType, entityId])
+  @@index([createdAt])
+}
+
+model Notification {
+  id        String   @id
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  title     String
+  body      String   @default("")
+  href      String   @default("")
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  @@index([userId])
+}

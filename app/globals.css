@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --canvas: #fafaf8;
+  --sidebar: #f5f5f2;
+  --ink: #191a19;
+  --graphite: #777a77;
+  --border: #e7e7e2;
+  --forest: #176b50;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: Inter, "SF Pro Text", "Segoe UI", system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection { background: #176b50; color: #fff; }
+:focus-visible { outline: 2px solid #176b50; outline-offset: 1px; border-radius: 4px; }
+.tabular { font-variant-numeric: tabular-nums; }
+
+/* Restrained motion system: 120–200ms, state-change only */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+.rise { animation: fadeUp .18s cubic-bezier(.22,.8,.32,1) both; }
+@keyframes drawerIn { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; transform: none; } }
+.drawer-in { animation: drawerIn .18s cubic-bezier(.22,.8,.32,1) both; }
+@keyframes overlayIn { from { opacity: 0; } to { opacity: 1; } }
+.overlay-in { animation: overlayIn .14s ease both; }
+@keyframes pulse-dot { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
+.pulse-dot { animation: pulse-dot 1.6s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+/* Thin, quiet scrollbars */
+* { scrollbar-width: thin; scrollbar-color: #D9D9D1 transparent; }
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-thumb { background: #D9D9D1; border-radius: 8px; }
+
+input, select, textarea, button { font: inherit; }
+input[type='checkbox'] { accent-color: #176b50; }
+
+@media print {
+  .no-print { display: none !important; }
+  body { background: #fff; }
+}

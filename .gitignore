@@ -1,0 +1,14 @@
+node_modules/
+.next/
+.env
+*.db
+*.db-journal
+coverage/
+uploads/
+.DS_Store
+
+# caches / local tooling
+.npm/
+.cache/
+.config/
+.arena/

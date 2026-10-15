@@ -1,0 +1,49 @@
+{
+  "contract": "0xA9199502C11C897a8550273Bcb7d8B1816DF4669",
+  "network": "testnetBradbury",
+  "explorer": "https://explorer-bradbury.genlayer.com",
+  "run": "live1",
+  "ranAt": "2026-10-15T08:42:32.382Z",
+  "results": [
+    {
+      "scenario": "B",
+      "name": "disputed delivery → structured outcome",
+      "ok": true,
+      "detail": "decision=BUYER_WINS findings=2 status=ACCEPTED execution=FINISHED_WITH_RETURN",
+      "txHash": "0x002e761f99830a1ba16bb1259028824158bbb09142238bd093586c2fc9b0c26d",
+      "explorerTxUrl": "https://explorer-bradbury.genlayer.com/tx/0x002e761f99830a1ba16bb1259028824158bbb09142238bd093586c2fc9b0c26d"
+    },
+    {
+      "scenario": "C",
+      "name": "empty evidence → INSUFFICIENT_EVIDENCE (evidence floor)",
+      "ok": true,
+      "detail": "decision=INSUFFICIENT_EVIDENCE status=ACCEPTED execution=FINISHED_WITH_RETURN",
+      "txHash": "0x1ef8f4bb59bd038ab438cb635cc4fb1ae9afb14b16f92209fb5e40365b2d0749",
+      "explorerTxUrl": "https://explorer-bradbury.genlayer.com/tx/0x1ef8f4bb59bd038ab438cb635cc4fb1ae9afb14b16f92209fb5e40365b2d0749"
+    },
+    {
+      "scenario": "D",
+      "name": "empty criteria rejected deterministically",
+      "ok": true,
+      "detail": "status=ACCEPTED execution=FINISHED_WITH_ERROR",
+      "txHash": "0x50023f995b96b1be9c0e7024456ab7d3fdbc7e4d2254329d813497be93e799a3",
+      "explorerTxUrl": "https://explorer-bradbury.genlayer.com/tx/0x50023f995b96b1be9c0e7024456ab7d3fdbc7e4d2254329d813497be93e799a3"
+    },
+    {
+      "scenario": "D",
+      "name": "duplicate adjudication of decided case rejected",
+      "ok": true,
+      "detail": "case=live1-b status=ACCEPTED execution=FINISHED_WITH_ERROR",
+      "txHash": "0xbdc846ed55d3cd363a9193f09db64d25f5d796a170375b428837274d7631121a",
+      "explorerTxUrl": "https://explorer-bradbury.genlayer.com/tx/0xbdc846ed55d3cd363a9193f09db64d25f5d796a170375b428837274d7631121a"
+    },
+    {
+      "scenario": "E",
+      "name": "decided case stable; one authorization record only (settlement off-chain, idempotent)",
+      "ok": true,
+      "detail": "case=live1-b status=DECIDED",
+      "txHash": null,
+      "explorerTxUrl": null
+    }
+  ]
+}
