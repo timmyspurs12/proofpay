@@ -83,10 +83,16 @@ adjudication**; simulated records are never presented as chain transactions.
 
 ## Honest status
 
-- **GenLayer network/deployment:** contract source is complete and statically
-  tested; it is **not deployed** from this environment (no funded testnet key
-  available). The app therefore runs simulated adjudication, labelled everywhere.
-  Deployment is a ~10-minute follow-up with a faucet-funded key (`docs/GENLAYER.md`).
+- **GenLayer network/deployment:** the contract **is deployed and verified** on
+  GenLayer Bradbury (chain 4221) at
+  `0xA9199502C11C897a8550273Bcb7d8B1816DF4669` — deployment tx FINALIZED with
+  `FINISHED_WITH_RETURN`, on-chain code hash identical to
+  `contracts/proofpay_adjudicator.py`. With the `GENLAYER_*` env vars set the
+  app adjudicates live (`GENLAYER_TESTNET`); without them it runs clearly
+  labelled simulated adjudication. Full evidence: `docs/SUBMISSION_CHECKPOINT.md`.
+  Note: app-submitted adjudications depend on Bradbury validator activity;
+  four recorded attempts reached finality **without an adopted verdict**
+  (idle/disagreement) and the app correctly recorded no decision for them.
 - **Payments:** demo ledger only. No real assets move; simulated funding/
   settlement references use `demo-tx-…` ids and `SIMULATED` status.
 - **Database:** SQLite for the local demo; PostgreSQL is a provider switch away

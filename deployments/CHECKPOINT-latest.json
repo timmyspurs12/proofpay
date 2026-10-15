@@ -1,5 +1,5 @@
 {
-  "checkpointAt": "2026-10-15T10:13:11.730Z",
+  "checkpointAt": "2026-10-15T10:40:54.634Z",
   "network": "GenLayer Testnet Bradbury",
   "chainId": 4221,
   "rpc": "https://rpc-bradbury.genlayer.com",
@@ -91,11 +91,7 @@
     "network": "Bradbury 4221"
   },
   "rechecked": {
-    "deploy": "FINALIZED | AGREE | FINISHED_WITH_RETURN",
-    "codeHashMatches": true,
-    "scenarios": "A/B/C FINALIZED decided; D rejected-as-designed; E by-design",
-    "appAttempts": "1-3 FINALIZED without verdict; 4 LEADER_TIMEOUT; 0 imported, 0 settled",
-    "tests": "vitest 14/14; static pytest 9/9; direct-mode 2 blocked upstream (404); lint pass; build pass",
-    "frontend": "GENLAYER_TESTNET"
-  }
+    "app4": "FINALIZED | IDLE | NOT_VOTED (final; case UNKNOWN)"
+  },
+  "appAttemptsFinal": "all four FINALIZED/terminal, zero eligible verdicts, zero imported"
 }
