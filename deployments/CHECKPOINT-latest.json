@@ -1,5 +1,5 @@
 {
-  "checkpointAt": "2026-10-15T10:40:54.634Z",
+  "checkpointAt": "2026-10-15T10:50:41.260Z",
   "network": "GenLayer Testnet Bradbury",
   "chainId": 4221,
   "rpc": "https://rpc-bradbury.genlayer.com",
@@ -93,5 +93,7 @@
   "rechecked": {
     "app4": "FINALIZED | IDLE | NOT_VOTED (final; case UNKNOWN)"
   },
-  "appAttemptsFinal": "all four FINALIZED/terminal, zero eligible verdicts, zero imported"
+  "appAttemptsFinal": "all four FINALIZED/terminal, zero eligible verdicts, zero imported",
+  "repositoryUrl": "https://github.com/timmyspurs12/proofpay",
+  "publishedCommit": "adcbd39bbe19063090062759ff93814669723fb1"
 }
