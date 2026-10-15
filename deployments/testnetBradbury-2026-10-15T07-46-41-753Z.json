@@ -10,7 +10,7 @@
   "sourcePath": "contracts/proofpay_adjudicator.py",
   "sourceSha256": "9b90bd1eadd2ee82cfa98398c5613229d06fe17f4bb0084735f4433c46baa6bf",
   "onChainCodeSha256": "9b90bd1eadd2ee82cfa98398c5613229d06fe17f4bb0084735f4433c46baa6bf",
-  "sourceRevision": "git commit 3dd8a34576e9f675ca6b9011a6edb4ba99730611 (contract identified by sha256)",
+  "sourceRevision": "git commit 0d9667954b5e844c0b3713f0a954039b6cfe02de (repo re-created 2026-10-15; workspace snapshots do not persist .git internals — push to GitHub to preserve). Contract identified by sha256.",
   "deployer": "0x52d3784dF7cdAB983aAE340150fd3757ACaEFCA0",
   "constructorArgs": [],
   "sdk": {
@@ -27,5 +27,5 @@
   "explorerContractUrl": "https://explorer-bradbury.genlayer.com/address/0xA9199502C11C897a8550273Bcb7d8B1816DF4669",
   "explorerTxUrl": "https://explorer-bradbury.genlayer.com/tx/0x2ab58f01bf8a5371dad5a8c6d32612dcfbc8f2e10c9f010e83bfebc294e8f623",
   "finalizedCheckedAt": "2026-10-15T08:42:54.307Z",
-  "gitCommit": "3dd8a34576e9f675ca6b9011a6edb4ba99730611"
+  "gitCommit": "0d9667954b5e844c0b3713f0a954039b6cfe02de"
 }

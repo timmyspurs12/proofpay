@@ -18,7 +18,7 @@ Report date: 2026-10-15 · Prepared in the ProofPay workspace (`/home/user`)
 | Project | ProofPay — evidence-based escrow with GenLayer adjudication |
 | Contract | `ProofPayAdjudicator` (version tag used by the app: `proofpay-adjudicator@1.0.0`) |
 | Application | Next.js 14.2.5 (App Router), TypeScript, Prisma/SQLite demo workspace |
-| Source revision | Initial commit `3dd8a34576e9f675ca6b9011a6edb4ba99730611` (created 2026-10-15 for publication; `.env` and caches excluded by `.gitignore` — verified no secrets staged). The contract is additionally identified by source checksum (below). |
+| Source revision | Git commit `0d9667954b5e844c0b3713f0a954039b6cfe02de` (repo created 2026-10-15 for publication; `.env` and caches excluded by `.gitignore` — verified no secrets staged). The contract is additionally identified by source checksum (below). |
 | Custody model | **The contract never holds funds.** It stores a bounded settlement authorization (decision + split). The ProofPay backend executes settlement off-chain only after deterministic re-validation, with idempotency keys. Any portal text must not describe this as on-chain escrow custody. |
 
 ## 2. Network (verified live, 2026-10-15)
