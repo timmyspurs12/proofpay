@@ -1,5 +1,5 @@
 {
-  "checkpointAt": "2026-10-15T10:07:06.020Z",
+  "checkpointAt": "2026-10-15T10:07:59.741Z",
   "network": "GenLayer Testnet Bradbury",
   "chainId": 4221,
   "rpc": "https://rpc-bradbury.genlayer.com",
@@ -89,5 +89,11 @@
     "mode": "GENLAYER_TESTNET (verified via GET /api/auth/me at checkpoint)",
     "contractAddress": "0xA9199502C11C897a8550273Bcb7d8B1816DF4669",
     "network": "Bradbury 4221"
+  },
+  "rechecked": {
+    "deploy": "FINALIZED | AGREE | FINISHED_WITH_RETURN",
+    "scenarioA": "FINALIZED | AGREE | FINISHED_WITH_RETURN",
+    "live1b": "BUYER_WINS",
+    "app4": "LEADER_TIMEOUT | IDLE | NOT_VOTED (unchanged, case UNKNOWN)"
   }
 }

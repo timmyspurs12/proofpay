@@ -1,6 +1,6 @@
 # ProofPay — Submission Checkpoint (live, verified)
 
-**Checkpoint date:** 2026-10-15 · **Status: deployment verified; minimum viable live demonstration complete.**
+**Checkpoint date:** 2026-10-15 (re-verified same day — all values unchanged) · **Status: deployment verified; minimum viable live demonstration complete.**
 All values below were re-read through the GenLayer SDK at checkpoint time. Nothing here is simulated, and no transaction was resubmitted to produce this report.
 
 ## 1. Deployment checkpoint
