@@ -12,3 +12,4 @@ uploads/
 .cache/
 .config/
 .arena/
+__pycache__/
