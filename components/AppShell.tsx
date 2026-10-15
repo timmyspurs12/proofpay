@@ -109,6 +109,7 @@ function ShellInner({ children }: { children: React.ReactNode }) {
   const [users, setUsers] = useState<{ id: string; name: string; role: string; email: string }[]>([]);
   const [notifs, setNotifs] = useState<{ id: string; title: string; body: string; href: string; createdAt: string; read: boolean }[]>([]);
   const [busy, setBusy] = useState(false);
+  const [gateLoaded, setGateLoaded] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
