@@ -55,7 +55,7 @@ npm start              # next start -p 3000 -H 0.0.0.0
 | Runtime | Node 20+, outbound HTTPS egress to `https://rpc-bradbury.genlayer.com` (server-side GenLayer calls) |
 | Database | SQLite file (single-instance demo) or PostgreSQL 16 via `DATABASE_URL` (provider switch in `prisma/schema.prisma`, then `npx prisma migrate deploy`) |
 | `DATABASE_URL` | **required** — SQLite path or Postgres URL |
-| `SESSION_SECRET` | **required in production** — long random value; signs the session cookie. Behind HTTPS (TLS terminated at proxy/host), set `NEXT_PUBLIC_APP_URL` to the public `https://` URL |
+| `SESSION_SECRET` | **required in production** — long random value; signs the session cookie. Terminate TLS (HTTPS) at the proxy/host in production |
 | `GENLAYER_NETWORK` | set to `testnetBradbury` (chain 4221) |
 | `GENLAYER_CONTRACT_ADDRESS` | `0xA9199502C11C897a8550273Bcb7d8B1816DF4669` (verified deployment) |
 | `GENLAYER_PRIVATE_KEY` | **required for live mode** — dedicated funded *testnet* key. Server-side only; never prefix with `NEXT_PUBLIC_`, never in client bundles, logs, or repo files. The app's current live client constructs this signer for submissions **and** for verdict/status reads, so live mode is unavailable without it. The key controls no user funds (contract is non-custodial) but can spend its own testnet GEN on fees |
