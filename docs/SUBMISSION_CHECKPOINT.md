@@ -86,3 +86,19 @@ genvm-lint check contracts/proofpay_adjudicator.py   # passed (genvm-linter 0.11
 | Contract direct-mode tests blocked | Upstream GenVM v0.3.0-rc7 binary returns HTTP 404 in `genlayer-test 0.29.2` (latest); rerun `pytest contracts/tests/test_direct.py` when the pinned asset is restored. Lint + on-chain execution already cover correctness |
 | No public website / GitHub repo | `git push` the committed repo; deploy the app to a public URL; then submit portal evidence (contract address page + scenario txs above) per `docs/GENLAYER_DEPLOYMENT_REPORT.md` §11 |
 | Deployer balance | ≈0.749 GEN remains — sufficient for further testnet adjudications; top up via https://testnet-faucet.genlayer.foundation if needed |
+
+---
+
+## Latest state — final verification run (2026-10-15, read-only; appended, history preserved)
+
+**Repository:** branch `master`, HEAD `ee22f86` at run start (history: `0d96679 → 61e5923 → 8fda6bf → 411ff5d → ddb4090 → 3f253fc → 7dc7794 → ee22f86`), working tree clean, no remotes, no tracked secrets (`.env` ignored; verified via `git ls-files`).
+
+**Reverified this run (fresh SDK reads):**
+- Deployment tx `0x2ab58f01bf8a5371dad5a8c6d32612dcfbc8f2e10c9f010e83bfebc294e8f623`: **FINALIZED · AGREE · FINISHED_WITH_RETURN**; source SHA-256 recomputed from disk `9b90bd1eadd2ee82cfa98398c5613229d06fe17f4bb0084735f4433c46baa6bf`; on-chain `getContractCode` hash **identical**; schema = `adjudicate, get_case_status, get_snapshot_hash, get_verdict`.
+- Scenarios: A (`0x55c81b…`) FINALIZED/AGREE/FINISHED_WITH_RETURN; B (`0x002e76…`, case `live1-b` DECIDED → **BUYER_WINS**); C (`0x1ef8f4…`, case `live1-c` DECIDED → **INSUFFICIENT_EVIDENCE**); D1 (`0x50023f…`) and D2 (`0xbdc846…`) FINALIZED with `FINISHED_WITH_ERROR` (rejected as designed); E by-design (single stable authorization record; no on-chain settlement function).
+- App attempts: #1 FINALIZED/IDLE (no verdict, case UNKNOWN), #2 FINALIZED/DISAGREE (UNDETERMINED semantics, case UNKNOWN), #3 FINALIZED/IDLE/NOT_VOTED (case UNKNOWN), **#4 still `LEADER_TIMEOUT`** (case UNKNOWN). **No eligible decided verdict exists → nothing imported.** DB audit: 4 persisted requests (3 PENDING, 1 UNDETERMINED), **0 imported results, 0 settlements** — fail-safe and exactly-once behaviour verified. Lifecycle stops at: on-chain consensus (network stage), before verdict import — by design, resumable via Refresh (PATCH the latest request only).
+- Frontend: `GET /api/auth/me` → `GENLAYER_TESTNET`, Bradbury 4221, contract `0xA9199502C11C897a8550273Bcb7d8B1816DF4669`. Live vs simulated remain strictly separated.
+
+**Tests this run (fresh):** `npm test` (vitest) **14/14**; contract static pytest **9 passed**; direct-mode pytest **2 failed pre-execution** (upstream GenVM v0.3.0-rc7 binary HTTP 404 in `genlayer-test 0.29.2`, the latest — **non-blocking**: the verified live path, not the mocked direct mode, is the demonstration); `genvm-lint check` **passed**; `npm run build` **success**.
+
+**Public demo / submission:** website **not publicly hosted** (no public URL exists — none claimed); GitHub **not published** (no remotes; ready to push); portal **not submitted**. Account-owner actions unchanged (§6).
