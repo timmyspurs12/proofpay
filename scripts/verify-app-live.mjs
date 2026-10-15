@@ -34,7 +34,7 @@ async function call(method, path, body, expect) {
 await call('POST', '/api/auth/login', { userId: 'usr_lena' }, 200);
 say('logged in as Elena Vasquez (client, party to agr_contested)');
 
-const sub = await call('POST', `/api/disputes/${DISPUTE}/adjudications`, { idempotencyKey: 'live-verify:2026-10-15' }, 202);
+const sub = await call('POST', `/api/disputes/${DISPUTE}/adjudications`, { idempotencyKey: process.argv[2] || process.env.IDEMPOTENCY_KEY || 'live-verify:2026-10-15' }, 202);
 const reqId = sub.data.request.id;
 const txId = sub.data.request.txId;
 record.requestId = reqId; record.txId = txId; record.mode = sub.data.mode;

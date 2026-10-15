@@ -14,5 +14,9 @@
   ],
   "pendingAtRecordTime": "Network-side status LEADER_TIMEOUT (leader rotation, result IDLE) for >50 minutes — validator voting had not completed. This is network behaviour, not an app or contract error: the same contract decided scenarios A–E earlier the same day.",
   "resume": "When the tx reaches ACCEPTED/FINALIZED, call PATCH /api/disputes/dsp_contested/adjudications {requestId} (or press Refresh in the dispute UI) — the app imports and validates the verdict, authorizes settlement, and POST /api/settlements/:id/execute completes it. If the tx ends UNDETERMINED, the app returns the dispute to EVIDENCE/DISPUTED with no state decided. Re-running scripts/verify-app-live.mjs would create a SECOND request; resume the existing one instead.",
-  "recordedAt": "2026-10-15"
+  "recordedAt": "2026-10-15",
+  "retry": {
+    "note": "First app-submitted tx remained LEADER_TIMEOUT (round 0, no votes) for hours — stalled network-side. A second adjudication request was submitted through the app with a new idempotency key (product retry path); the first request remains PENDING and auditable.",
+    "submitted": "2026-10-15"
+  }
 }
